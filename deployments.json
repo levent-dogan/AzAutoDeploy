@@ -1,0 +1,72 @@
+{
+  "schema": "https://example.com/schemas/azautodeploy.schema.json",
+  "version": "1.0",
+  "deployments": [
+    {
+      "name": "AppService-Dev",
+      "resourceGroup": {
+        "name": "rg-AppService-Dev",
+        "location": "East US",
+        "tags": {
+          "environment": "Dev",
+          "owner": "TeamA",
+          "project": "CoolApp"
+        }
+      },
+      "template": {
+        "file": "templates/appservice.json",
+        "checksum": "sha256:3a7d2f...e5b1"
+      },
+      "parameters": {
+        "file": "parameters/appservice.dev.parameters.json",
+        "overrides": {
+          "sku": "S1",
+          "workerSize": 0
+        }
+      },
+      "mode": "Incremental",
+      "preChecks": {
+        "requireLogin": true,
+        "validateTemplateFile": true,
+        "validateParameterFile": true,
+        "validateResourceGroupName": true
+      },
+      "retryPolicy": {
+        "maxAttempts": 3,
+        "delaySeconds": 15,
+        "backoffFactor": 2
+      }
+    },
+    {
+      "name": "AppService-Prod",
+      "resourceGroup": {
+        "name": "rg-AppService-Prod",
+        "location": "Central US",
+        "tags": {
+          "environment": "Prod",
+          "owner": "TeamA",
+          "project": "CoolApp"
+        }
+      },
+      "template": {
+        "file": "templates/appservice.json",
+        "checksum": "sha256:3a7d2f...e5b1"
+      },
+      "parameters": {
+        "file": "parameters/appservice.prod.parameters.json"
+      },
+      "mode": "Complete",
+      "preChecks": {
+        "requireLogin": true,
+        "validateTemplateFile": true,
+        "validateParameterFile": true,
+        "validateResourceGroupName": true
+      },
+      "retryPolicy": {
+        "maxAttempts": 5,
+        "delaySeconds": 30,
+        "backoffFactor": 2
+      }
+    }
+  ]
+}
