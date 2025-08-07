@@ -1,0 +1,42 @@
+# PowerShell deployment script logs
+AzAutoDeploy.log
+logs/
+*.log
+
+# PowerShell module installs (if you ever pull modules locally)
+**/Modules/
+**/bin/
+**/obj/
+
+# User-specific PowerShell files
+*.ps1.user
+*.ps1xml
+*.cache
+
+# Azure PowerShell token cache
+TokenCache.dat
+AccessTokenCache.dat
+
+# Visual Studio / VSCode
+.vscode/
+*.code-workspace
+
+# Windows thumbnail cache, system files
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+
+# Editor backups
+*~
+*.swp
+
+# Git metadata
+.gitignore
+README.md
+
+# Ignore any secrets or credentials files by convention
+*.secret.json
+*.creds.json
