@@ -1,0 +1,75 @@
+{
+  "$schema": "https://example.com/schemas/azautodeploy.schema.json",
+  "version": "1.1",
+  "subscriptionId": "00000000-0000-0000-0000-000000000000",
+  "deployments": [
+    {
+      "name": "AppService-Dev-2025-01",
+      "resourceGroup": {
+        "name": "rg-AppService-Dev",
+        "location": "East US",
+        "tags": {
+          "environment": "Dev",
+          "owner": "TeamA",
+          "project": "CoolApp"
+        }
+      },
+      "template": {
+        "file": "templates/appservice.json",
+        "checksum": "sha256:YOUR_SHA256_HASH_HERE"
+      },
+      "parameters": {
+        "file": "parameters/appservice.dev.parameters.json",
+        "checksum": "sha256:YOUR_SHA256_HASH_HERE",
+        "overrides": {
+          "sku": "S1",
+          "workerSize": 0
+        }
+      },
+      "mode": "Incremental",
+      "preChecks": {
+        "requireLogin": true,
+        "validateTemplateFile": true,
+        "validateParameterFile": true,
+        "validateResourceGroupName": true
+      },
+      "retryPolicy": {
+        "maxAttempts": 3,
+        "delaySeconds": 15,
+        "backoffFactor": 2
+      }
+    },
+    {
+      "name": "AppService-Prod-2025-01",
+      "subscriptionId": "11111111-1111-1111-1111-111111111111",
+      "resourceGroup": {
+        "name": "rg-AppService-Prod",
+        "location": "Central US",
+        "tags": {
+          "environment": "Prod",
+          "owner": "TeamA",
+          "project": "CoolApp"
+        }
+      },
+      "template": {
+        "file": "templates/appservice.json",
+        "checksum": "sha256:YOUR_SHA256_HASH_HERE"
+      },
+      "parameters": {
+        "file": "parameters/appservice.prod.parameters.json"
+      },
+      "mode": "Complete",
+      "preChecks": {
+        "requireLogin": true,
+        "validateTemplateFile": true,
+        "validateParameterFile": true,
+        "validateResourceGroupName": true
+      },
+      "retryPolicy": {
+        "maxAttempts": 5,
+        "delaySeconds": 30,
+        "backoffFactor": 2
+      }
+    }
+  ]
+}

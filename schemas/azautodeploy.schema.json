@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/azautodeploy.schema.json",
+  "title": "AzAutoDeploy Spec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "deployments"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\.[0-9]+(\.[0-9]+)?$" },
+    "subscriptionId": { "type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" },
+    "deployments": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/deployment" }
+    }
+  },
+  "definitions": {
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "resourceGroup", "template"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9._()\-]+$",
+          "description": "Azure deployment name (unique per RG)."
+        },
+        "subscriptionId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "resourceGroup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "location"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 90,
+              "pattern": "^[A-Za-z0-9._()\-]+$"
+            },
+            "location": { "type": "string", "minLength": 1 },
+            "tags": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        },
+        "template": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file"],
+          "properties": {
+            "file": { "type": "string", "minLength": 1 },
+            "checksum": { "type": "string", "pattern": "^sha256:[0-9a-fA-F]{64}$" }
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "file": { "type": "string" },
+            "checksum": { "type": "string", "pattern": "^sha256:[0-9a-fA-F]{64}$" },
+            "overrides": { "type": "object", "additionalProperties": true }
+          }
+        },
+        "mode": { "type": "string", "enum": ["Incremental", "Complete"] },
+        "preChecks": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requireLogin": { "type": "boolean" },
+            "validateTemplateFile": { "type": "boolean" },
+            "validateParameterFile": { "type": "boolean" },
+            "validateResourceGroupName": { "type": "boolean" }
+          }
+        },
+        "retryPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 20 },
+            "delaySeconds": { "type": "integer", "minimum": 1, "maximum": 600 },
+            "backoffFactor": { "type": "integer", "minimum": 1, "maximum": 10 }
+          }
+        }
+      }
+    }
+  }
+}
